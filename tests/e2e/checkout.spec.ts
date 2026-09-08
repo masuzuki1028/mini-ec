@@ -195,6 +195,7 @@ test("購入導線どおりに商品購入を完了できる", async ({ context,
   // ステップ1: トップページを開き、商品一覧への導線を進む。
   await page.goto("/");
   await page.evaluate(() => window.localStorage.clear());
+  await page.reload();
   await expect(page.getByRole("heading", { name: /自家焙煎のコーヒー豆/ })).toBeVisible();
   await page.getByRole("link", { name: "商品を見る" }).click();
 
@@ -205,9 +206,13 @@ test("購入導線どおりに商品購入を完了できる", async ({ context,
 
   // ステップ3: 商品をカートに追加し、カート画面で注文内容を確認する。
   await page.getByRole("button", { name: "カートに追加" }).click();
+  await expect(page.getByRole("button", { name: "カートに追加しました" })).toBeVisible();
+  await expect(page.getByRole("link", { name: /現在 1 個の商品/ })).toBeVisible();
   await page.getByRole("link", { name: /カートを見る/ }).click();
   await expect(page.getByRole("heading", { name: "カートに入っている商品" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "決済する" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "決済する" })).toBeVisible({
+    timeout: 10000,
+  });
 
   // ステップ4: ログイン画面で購入ユーザーとしてログインする。
   await page.goto("/login?redirect=/cart");
