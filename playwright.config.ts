@@ -7,7 +7,7 @@ export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: true,
   retries: process.env.CI ? 2 : 0,
-  reporter: "html",
+  reporter: process.env.CI ? [["line"], ["html", { open: "never" }]] : "html",
   use: {
     baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000",
     trace: "on-first-retry",

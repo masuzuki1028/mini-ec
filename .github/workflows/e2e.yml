@@ -56,4 +56,5 @@ jobs:
         with:
           name: playwright-test-results
           path: test-results/
+          if-no-files-found: ignore
           retention-days: 30
