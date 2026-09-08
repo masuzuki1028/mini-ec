@@ -39,6 +39,23 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
+      - name: Validate E2E secrets
+        run: |
+          missing=0
+          for name in \
+            NEXT_PUBLIC_SUPABASE_URL \
+            NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY \
+            SUPABASE_SERVICE_ROLE_KEY \
+            STRIPE_SECRET_KEY \
+            STRIPE_WEBHOOK_SECRET
+          do
+            if [ -z "${!name}" ]; then
+              echo "::error::$name is not set"
+              missing=1
+            fi
+          done
+          exit "$missing"
+
       - name: Run Playwright tests
         run: npx playwright test
 
